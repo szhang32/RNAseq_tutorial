@@ -1,0 +1,89 @@
+---
+title: "Differential expression analysis between high-sugar diet vs control in fruit
+  fly"
+author: "Shuo Zhang"
+date: "December 21, 2022"
+output:
+  pdf_document: default
+  html_document: default
+layout: page
+---
+
+## Load Libraries 
+```{r load libraries}
+library(ggplot2)
+library(DESeq2)
+library(EnhancedVolcano)
+```
+
+
+# read count table and sample information
+```{r}
+cts <- read.table('../formatted_HSD_featureCounts.txt', header = TRUE, row.names = 1)
+#keep <- rowSums(cts >= 10) >= 3
+#cts <- cts[keep,]
+head(cts)
+```
+
+# read sample information
+```{r}
+coldata <- read.table('../coldata.txt', header = TRUE, row.names =1)
+coldata$condition <- factor(coldata$condition, levels = c("ND", "F1"))
+coldata
+```
+
+### quick start
+```{r}
+dds <- DESeqDataSetFromMatrix(countData = cts,
+                              colData = coldata,
+                              design= ~ condition)
+
+dds <- DESeq(dds)
+resultsNames(dds) # lists the coefficients
+
+# or to shrink log fold changes association with condition:
+#res <- lfcShrink(dds, coef="condition_trt_vs_untrt", type="apeglm")
+```
+
+# MA-plot
+```{r}
+res <- results(dds)
+plotMA(res, ylim=c(-2,2))
+resLFC <- lfcShrink(dds, coef="condition_F1_vs_ND", type="apeglm")
+resLFC.Ordered <- resLFC[order(resLFC$pvalue),]
+plotMA(resLFC)
+```
+# PCA
+```{r}
+rld <- rlog(dds, blind = FALSE)
+plotPCA(rld, intgroup=c("condition"))
+pcaData <- plotPCA(rld, intgroup = c("condition"), returnData=TRUE)
+percentVar <- round(100 * attr(pcaData, "percentVar"))
+ggplot(pcaData, aes(PC1, PC2, label = name)) +
+  geom_point(size=3) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+  coord_fixed() + geom_text_repel(alpha=0.5, size=3) 
+```
+
+# volcano plot
+```{r, fig.height=10, fig.width=10}
+EnhancedVolcano(res,
+    lab = rownames(res),
+    x = 'log2FoldChange',
+    y = 'pvalue',
+    pCutoff = 0.05,
+    FCcutoff =  0.5849625
+  )
+```
+```{r}
+plotCounts(dds, gene=which.min(res$padj), intgroup="condition")
+
+plotCounts(dds, gene='cad', intgroup="condition")
+```
+```{r}
+
+```
+
+
+

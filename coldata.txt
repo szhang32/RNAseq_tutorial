@@ -1,0 +1,7 @@
+sampleID	condition
+F1_1	F1
+F1_2	F1
+F1_3	F1
+ND_1	ND
+ND_2	ND
+ND_3	ND
