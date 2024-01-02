@@ -59,7 +59,7 @@ rld <- rlog(dds, blind = FALSE)
 plotPCA(rld, intgroup=c("condition"))
 pcaData <- plotPCA(rld, intgroup = c("condition"), returnData=TRUE)
 percentVar <- round(100 * attr(pcaData, "percentVar"))
-ggplot(pcaData, aes(PC1, PC2, label = name)) +
+ggplot(pcaData, aes(PC1, PC2, label = name, color = group)) +
   geom_point(size=3) +
   xlab(paste0("PC1: ",percentVar[1],"% variance")) +
   ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
@@ -83,6 +83,11 @@ plotCounts(dds, gene='cad', intgroup="condition")
 ```
 ```{r}
 
+```
+
+```{bash}
+pwd
+python3 --version
 ```
 
 

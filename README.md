@@ -1,1 +1,2 @@
-# RNAseq_tutorial
+# Introduction to RNA-seq data analysis
+
