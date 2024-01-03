@@ -2,18 +2,18 @@
 title: "Differential expression analysis between high-sugar diet vs control in fruit
   fly"
 author: "Shuo Zhang"
-date: "December 21, 2022"
+date: "December 21, 2023"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 layout: page
 ---
 
 ## Load Libraries 
 ```{r load libraries}
-library(ggplot2)
-library(DESeq2)
-library(EnhancedVolcano)
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(DESeq2))
+suppressPackageStartupMessages(library(EnhancedVolcano))
 ```
 
 
@@ -81,14 +81,8 @@ plotCounts(dds, gene=which.min(res$padj), intgroup="condition")
 
 plotCounts(dds, gene='cad', intgroup="condition")
 ```
-```{r}
 
-```
 
-```{bash}
-pwd
-python3 --version
-```
 
 
 
